@@ -1,23 +1,26 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <algorithm>
 
 using namespace std;
 
 
 
-class zadania {
+class Zadania {
 private:
 	int nr_zadania;
 	int nr_maszyny;
 	int czas_wykonania;
-	
+
 public:
-	zadania(int nr_zadania, int nr_maszyny, int czas_wykonania)
+	int suma_czasu;
+	Zadania(int nr_zadania, int nr_maszyny, int czas_wykonania, int suma_czasu)
 	{
 		this->nr_zadania = nr_zadania;
 		this->nr_maszyny = nr_maszyny;
 		this->czas_wykonania = czas_wykonania;
+		this->suma_czasu = suma_czasu;
 	}
 
 	int wez_zadanie() { return nr_zadania; }
@@ -32,21 +35,40 @@ public:
 	}
 };
 
-vector<zadania> zaladuj_zadania() {
+vector<Zadania> zaladuj_zadania() {
 	int il_zadan, il_maszyn, k;
+	int suma = 0;
 
-	vector<zadania> kontener_zadan;
+	vector<Zadania> kontener_zadan;
 	ifstream plik;
 	plik.open("dane.txt");
 	plik >> il_zadan >> il_maszyn;
 
+	//Dla kazdego wiersza (zadanie)
 	for (int i = 0; i < il_zadan; i++)
 	{
+			//Dla kazdej kolumny (maszyny)
 			for (int j = 0; j < il_maszyn; ++j)
 			{
-				plik >> k;
-				kontener_zadan.push_back(zadania(i + 1, j + 1, k));
+				plik >> k;											//Wczytuj czas wykonywania sie zadania
+				kontener_zadan.push_back(Zadania(i + 1, j + 1, k, 0)); //I odpowiednio zappisz wszystkie wartosci
 			}
+	}
+
+	for (int i = 0; i < il_zadan*il_maszyn; ++i)
+	{
+		suma = suma + kontener_zadan[i].wez_czas();
+
+		if ((i + 1) % il_maszyn == 0 && i != 0) //Dodaje do ostatniej operacji danego zadania, pozniej bede wyszukiwal po takich samych nr zadania 
+		{
+			int temp = kontener_zadan[i].wez_zadanie(); //Dla konkretnego zadania
+			for (int j = 0; j < il_zadan*il_maszyn; j++)//Poszukujemy po wszystkich wektorach
+			{
+				if (kontener_zadan[j].wez_zadanie() == temp)//Jezeli operacja ma taki sam numer zadania, jak wyliczona dla zadania suma wszystkich operacji
+					kontener_zadan[j].suma_czasu = suma;	//Przypisujemy wartosc polu suma_czasu, sume wykonywania tego zadania
+			}
+			suma = 0;
+		}
 	}
 	plik.close();
 
@@ -55,11 +77,13 @@ vector<zadania> zaladuj_zadania() {
 }
 
 
+
+
 int main()
 {
+	vector<Zadania> kontener_zadan = zaladuj_zadania();
+	//NEH_algorytm(kontener_zadan);
 
-	vector<zadania> kontener_zadan = zaladuj_zadania();
-	
 	cout << "Breakpoint" << endl;
 
 	system("pause");
