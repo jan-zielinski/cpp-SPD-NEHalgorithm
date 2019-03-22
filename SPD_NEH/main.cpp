@@ -1,6 +1,10 @@
 #include <iostream>
 #include <vector>
+#include <fstream>
+
 using namespace std;
+
+
 
 class zadania {
 private:
@@ -12,13 +16,13 @@ public:
 	zadania(int nr_zadania, int nr_maszyny, int czas_wykonania)
 	{
 		this->nr_zadania = nr_zadania;
-		this->nr_zadania = nr_zadania;
+		this->nr_maszyny = nr_maszyny;
 		this->czas_wykonania = czas_wykonania;
 	}
 
 	int wez_zadanie() { return nr_zadania; }
 	int wez_maszyne() { return nr_maszyny; }
-	int wez_czas() { return czas_wykonania }
+	int wez_czas() { return czas_wykonania; }
 	int ustaw_zadanie(int nr_zadania) { this->nr_zadania = nr_zadania; }
 	int ustaw_czas(int czas_wykonania) { this->czas_wykonania = czas_wykonania; }
 	void pokaz_zadanie() {
@@ -28,10 +32,35 @@ public:
 	}
 };
 
+vector<zadania> zaladuj_zadania() {
+	int il_zadan, il_maszyn, k;
+
+	vector<zadania> kontener_zadan;
+	ifstream plik;
+	plik.open("dane.txt");
+	plik >> il_zadan >> il_maszyn;
+
+	for (int i = 0; i < il_zadan; i++)
+	{
+			for (int j = 0; j < il_maszyn; ++j)
+			{
+				plik >> k;
+				kontener_zadan.push_back(zadania(i + 1, j + 1, k));
+			}
+	}
+	plik.close();
+
+	return kontener_zadan;
+
+}
 
 
 int main()
 {
+
+	vector<zadania> kontener_zadan = zaladuj_zadania();
+	
+	cout << "Breakpoint" << endl;
 
 	system("pause");
 	return 0;
