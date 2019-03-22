@@ -12,9 +12,8 @@ private:
 	int nr_zadania;
 	int nr_maszyny;
 	int czas_wykonania;
-
-public:
 	int suma_czasu;
+public:
 	Zadania(int nr_zadania, int nr_maszyny, int czas_wykonania, int suma_czasu)
 	{
 		this->nr_zadania = nr_zadania;
@@ -28,6 +27,7 @@ public:
 	int wez_czas() { return czas_wykonania; }
 	int ustaw_zadanie(int nr_zadania) { this->nr_zadania = nr_zadania; }
 	int ustaw_czas(int czas_wykonania) { this->czas_wykonania = czas_wykonania; }
+	void ustaw_suma_czasu(int suma_czasu) { this->suma_czasu = suma_czasu; }
 	void pokaz_zadanie() {
 		cout << "Nr zadania: " << nr_zadania 
 			<< " czas wykonania: " << czas_wykonania 
@@ -59,13 +59,13 @@ vector<Zadania> zaladuj_zadania() {
 	{
 		suma = suma + kontener_zadan[i].wez_czas();
 
-		if ((i + 1) % il_maszyn == 0 && i != 0) //Dodaje do ostatniej operacji danego zadania, pozniej bede wyszukiwal po takich samych nr zadania 
+		if ((i + 1) % il_maszyn == 0 && i != 0) //Warunek ktory sprawdza czy wszystkie czasy dla kazdego zadania sie wykonaly 
 		{
 			int temp = kontener_zadan[i].wez_zadanie(); //Dla konkretnego zadania
 			for (int j = 0; j < il_zadan*il_maszyn; j++)//Poszukujemy po wszystkich wektorach
 			{
 				if (kontener_zadan[j].wez_zadanie() == temp)//Jezeli operacja ma taki sam numer zadania, jak wyliczona dla zadania suma wszystkich operacji
-					kontener_zadan[j].suma_czasu = suma;	//Przypisujemy wartosc polu suma_czasu, sume wykonywania tego zadania
+					kontener_zadan[j].ustaw_suma_czasu(suma);	//Przypisujemy wartosc polu suma_czasu, sume wykonywania tego zadania
 			}
 			suma = 0;
 		}
@@ -73,7 +73,6 @@ vector<Zadania> zaladuj_zadania() {
 	plik.close();
 
 	return kontener_zadan;
-
 }
 
 
