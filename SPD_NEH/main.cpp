@@ -86,7 +86,6 @@ vector<Zadania> zaladuj_zadania() {
 vector<Zadania> NehAlgorithm(vector<Zadania> kontener_zadan)
 {
 	vector<Zadania> posortowane_zadania = kontener_zadan;
-	vector<Zadania> kontener = kontener_zadan;
 	
 	sort(posortowane_zadania.begin(), posortowane_zadania.end());
 
