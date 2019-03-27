@@ -21,19 +21,26 @@ public:
 		this->czas_wykonania = czas_wykonania;
 		this->suma_czasu = suma_czasu;
 	}
-
+	
 	int wez_zadanie() { return nr_zadania; }
 	int wez_maszyne() { return nr_maszyny; }
 	int wez_czas() { return czas_wykonania; }
+	int wez_suma_czasu() const { return suma_czasu; }	//Const potrzebny do przeladowania operatora
 	int ustaw_zadanie(int nr_zadania) { this->nr_zadania = nr_zadania; }
 	int ustaw_czas(int czas_wykonania) { this->czas_wykonania = czas_wykonania; }
 	void ustaw_suma_czasu(int suma_czasu) { this->suma_czasu = suma_czasu; }
 	void pokaz_zadanie() {
-		cout << "Nr zadania: " << nr_zadania 
-			<< " czas wykonania: " << czas_wykonania 
-			<< " nr maszyny: " << nr_maszyny << endl;
+		cout << "Nr zadania: " << nr_zadania
+			<< " czas wykonania: " << czas_wykonania
+			<< " nr maszyny: " << nr_maszyny
+			<< " suma czasow: " << suma_czasu << endl;
 	}
 };
+
+bool operator<(const Zadania &z1, const Zadania &z2)		//https://www.walletfox.com/course/sortvectorofcustomobjects.php
+{
+	return z1.wez_suma_czasu() > z2.wez_suma_czasu();
+}
 
 vector<Zadania> zaladuj_zadania() {
 	int il_zadan, il_maszyn, k;
@@ -55,6 +62,7 @@ vector<Zadania> zaladuj_zadania() {
 			}
 	}
 
+	//For ktory liczy sume czasu wykonania calego zadania, i przypisuja ta wartosc kazdemu obiektowi wykonujacemu to zadanie
 	for (int i = 0; i < il_zadan*il_maszyn; ++i)
 	{
 		suma = suma + kontener_zadan[i].wez_czas();
@@ -75,13 +83,29 @@ vector<Zadania> zaladuj_zadania() {
 	return kontener_zadan;
 }
 
+vector<Zadania> NehAlgorithm(vector<Zadania> kontener_zadan)
+{
+	vector<Zadania> posortowane_zadania = kontener_zadan;
+	vector<Zadania> kontener = kontener_zadan;
+	
+	sort(posortowane_zadania.begin(), posortowane_zadania.end());
+
+	
+	
+	
+
+
+	return posortowane_zadania;
+}
+
 
 
 
 int main()
 {
 	vector<Zadania> kontener_zadan = zaladuj_zadania();
-	//NEH_algorytm(kontener_zadan);
+	vector<Zadania> posortowane = zaladuj_zadania();
+
 
 	cout << "Breakpoint" << endl;
 
