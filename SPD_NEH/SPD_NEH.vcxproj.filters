@@ -23,5 +23,8 @@
     <Text Include="dane.txt">
       <Filter>Pliki zasobów</Filter>
     </Text>
+    <Text Include="output.txt">
+      <Filter>Pliki zasobów</Filter>
+    </Text>
   </ItemGroup>
 </Project>

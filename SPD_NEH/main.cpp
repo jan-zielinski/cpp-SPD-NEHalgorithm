@@ -2,7 +2,7 @@
 #include <vector>
 #include <fstream>
 #include <algorithm>
-
+#include <time.h>
 
 using namespace std;
 int il_maszyn;
@@ -53,14 +53,13 @@ vector<Zadania> zaladuj_zadania() {
 	ifstream plik;
 	plik.open("dane.txt");
 	plik >> il_zadan >> il_maszyn;
-
 	//Dla kazdego wiersza (zadanie)
 	for (int i = 0; i < il_zadan; i++)
 	{
 		//Dla kazdej kolumny (maszyny)
 		for (int j = 0; j < il_maszyn; ++j)
 		{
-			plik >> k;											//Wczytuj czas wykonywania sie zadania
+			plik >> k;
 			kontener_zadan.push_back(Zadania(i + 1, j + 1, k, 0)); //I odpowiednio zappisz wszystkie wartosci
 		}
 	}
@@ -82,6 +81,7 @@ vector<Zadania> zaladuj_zadania() {
 		}
 	}
 	plik.close();
+
 
 	return kontener_zadan;
 }
@@ -175,7 +175,7 @@ int policz_Cmax(vector<vector<Zadania>> maszyna, vector<int>kolejnosc)
 
 	for (int i = 0; i < czas_maszyny.size(); i++)
 	{
-		cout << "CZAS NA MASZYNIE NR: " << i + 1 << " = " << czas_maszyny[i] << " " << endl;
+		//cout << "CZAS NA MASZYNIE NR: " << i + 1 << " = " << czas_maszyny[i] << " " << endl;
 		if (i == czas_maszyny.size() - 1)
 		{
 			time2 = czas_maszyny[i];
@@ -191,16 +191,16 @@ int policz_Cmax(vector<vector<Zadania>> maszyna, vector<int>kolejnosc)
 vector<Zadania> NehAlgorithm(vector<Zadania> kontener_zadan)
 {
 	vector <int> kolejnosc;
-
 	vector <Zadania> posortowane_zadania = kontener_zadan;
 	sort(posortowane_zadania.begin(), posortowane_zadania.end());
-	//Posortowanie zadan nierosnaco
+
 	for (int i = 0; i < posortowane_zadania.size(); i++)
 	{
 		kolejnosc.push_back(posortowane_zadania[i].wez_zadanie());
 		i += il_maszyn - 1;
 	}
 
+	cout << "||KOLEJNSOC ROZMIAR: " << kolejnosc.size() << endl;
 	auto cont = true;
 	vector <int> kolejnoscPetla;
 	vector <Zadania> kontenerPetla;
@@ -209,28 +209,8 @@ vector<Zadania> NehAlgorithm(vector<Zadania> kontener_zadan)
 	int iterator = 0;
 	int cmax;
 	int best = 99999;
-	while (iterator != 4)	// Kolejnosc 2 1 4 3
+	while (iterator != kolejnosc.size())	// Kolejnosc 2 1 4 3
 	{
-		if (iterator == 0)
-		{
-			kolejnoscPetla.push_back(kolejnosc[iterator]);
-
-			for (int i = 0; i < posortowane_zadania.size(); i++)
-			{
-				if (posortowane_zadania[i].wez_zadanie() == kolejnoscPetla[iterator])
-				{
-					kontenerPetla.push_back(posortowane_zadania[i]);
-				}
-			}
-			cmax = policz_Cmax(podziel_na_maszyny(kontenerPetla), kolejnoscPetla);
-			best = cmax;
-			najlepszaKolejnosc = kolejnoscPetla;
-			iterator++;
-		}
-		cout << endl;
-
-
-		if (iterator > 0)
 		{		
 			for (int i = 0; i <= kolejnoscPetla.size(); i++)
 			{
@@ -246,7 +226,7 @@ vector<Zadania> NehAlgorithm(vector<Zadania> kontener_zadan)
 
 				cmax = policz_Cmax(podziel_na_maszyny(kontenerPetla), kolejnoscPetla);
 
-				if (i == 0 || cmax <= best)
+				if (i == 0 || cmax < best)
 				{
 					best = cmax;
 					najlepszaKolejnosc = kolejnoscPetla;
@@ -257,65 +237,13 @@ vector<Zadania> NehAlgorithm(vector<Zadania> kontener_zadan)
 			}
 			kolejnoscPetla = najlepszaKolejnosc;
 			kontenerPetla = najlepszyKontener;
-			iterator += 1;
-				
+			iterator += 1;				
 		}
-
-		cout << "iterator: " << iterator << endl;
 	}
 
-	//while (iterator != 2)
-	//{
-	//	if (iterator == 0)
-	//	{
-	//		kolejnoscPetla.push_back(kolejnosc[iterator]);
-	//		for (int i = 0; i < posortowane_zadania.size(); i++)
-	//		{
-	//			if (posortowane_zadania[i].wez_zadanie() == kolejnoscPetla[iterator])
-	//			{
-	//				kontenerKolejnosc.push_back(posortowane_zadania[i]);
-	//			}
-	//		}
-	//		cmax = policz_Cmax(podziel_na_maszyny(kontenerKolejnosc), kolejnoscPetla);
-	//		best = cmax;
-	//		najlepszaKolejnosc = kolejnoscPetla;
-	//		iterator++;
-	//		}
-	//		cout << endl;
-
-	//		if (iterator > 0)
-	//		{
-	//			for (int i = 0; i = kolejnoscPetla.size(); i++)
-	//			{
-	//				kolejnoscPetla.insert(kolejnoscPetla.begin() + i, kolejnosc[iterator]);	//Wstawia kolejno na kazde miejsce (usun pozniej)
-
-	//				for (int j = 0; j < posortowane_zadania.size(); j++)
-	//				{
-	//					if(posortowane_zadania[j].wez_zadanie() == kolejnoscPetla[i])
-	//					{
-	//						kontenerKolejnosc.insert(kontenerKolejnosc.begin() + i * il_maszyn, posortowane_zadania[j]);
-	//					}
-	//					
-	//					cmax = policz_Cmax(podziel_na_maszyny(kontenerKolejnosc), kolejnoscPetla);
-	//					if (i == 0 || cmax < best)	//Zapamietuje najlepsza kolejnosc, i od razu kontener z zadaniami
-	//					{
-	//						best = cmax;
-	//						najlepszaKolejnosc = kolejnoscPetla;
-	//						najlepszyKontener = kontenerKolejnosc;
-	//					}
-	//					kolejnoscPetla.erase(kolejnoscPetla.begin() + i * il_maszyn);
-	//					kontenerKolejnosc.erase(kontenerKolejnosc.begin() + i * il_maszyn, kontenerKolejnosc.begin() + i * il_maszyn + il_maszyn);
-
-
-	//				}
-	//			}
-	//			iterator++;
-	//		}
-	//}
-
-	//Iterator, bedzie rowny wielkosci 'Kolejnosc' czyli posortowanych niemalejaco czasach operacji
-	
-	
+	cout << "Najlepszy wynik: " << best << " dla kolejnosci : ";
+	for (int k = 0; k < najlepszaKolejnosc.size(); k++)
+		cout << najlepszaKolejnosc[k] << " ";
 	cout << "\n" << best << endl;
 	cout << "breakpoint";
 
@@ -325,13 +253,17 @@ vector<Zadania> NehAlgorithm(vector<Zadania> kontener_zadan)
 
 int main()
 {
+	clock_t zegar;
+	double czas_trwania;
 	vector<Zadania> kontener_zadan = zaladuj_zadania();
+	zegar = clock();
 	vector<Zadania> posortowane = NehAlgorithm(kontener_zadan);
-	vector<vector <Zadania>> maszyna = podziel_na_maszyny(kontener_zadan);
-	vector<int> test_kolejnosc = { 2, 1 , 4};
-	int wynik = policz_Cmax(podziel_na_maszyny(kontener_zadan), test_kolejnosc);
+	czas_trwania = (clock() - zegar) / (double)CLOCKS_PER_SEC;
+	cout << "\nCzas trwania: " << czas_trwania << endl;
 
-	cout << "Breakpoint";
+	
+
+	system("pause");
 
 	return 0;
 }
